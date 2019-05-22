@@ -12,13 +12,14 @@
 import db from '@/firebase/init'
 
 export default {
-    name:'NewMessage',
-    props:['name'],
+    name:'NewMessagePersonal',
+   // props:['mename'],
     data(){
         return{
-            room: 'all',
+            room: this.$route.params.chatroom,
             newMessage: null,
-            feedback: null
+            feedback: null,
+            mename:this.$route.params.myname
         }
     },
     methods:{
@@ -28,7 +29,7 @@ export default {
                 //And then add data into that message collection
                 db.collection("messages").add({
                     content: this.newMessage,
-                    name: this.name,
+                    name: this.mename,
                     room: this.room,
                     timestamp: Date.now()
                 }).catch(err =>{

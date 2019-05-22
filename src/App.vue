@@ -7,9 +7,11 @@
 </template>
 
 <script>
-
+import NewMessagePersonal from '@/components/NewMessagePersonal'
 export default {
-  name: 'App'
+  name: 'App',
+  components:{
+  }
 }
 </script>
 

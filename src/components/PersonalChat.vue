@@ -1,43 +1,48 @@
 <template>
     <div class="chat container">
-        <h2 class="center teal-text">Moo Chat</h2>
+        <h2 class="center teal-text">{{this.$route.params.chatroom}} Chat</h2>
+        <button class="waves-effect waves-light btn" @click="goBack">Back</button>
         <div class="card">
             <div class="card-content">
                 <ul class="messages" v-chat-scroll>
                     <li v-for="message in messages" :key="message.id">
-                        <router-link :to="{ name: 'PersonalChat', params: { chatroom: message.name, myname:name}}">
                             <span class="teal-text">{{message.name}} :</span>
-                        </router-link>
                         <span class="grey-text text-darken-3">{{message.content}}</span>
                         <span class="grey-text time">{{message.timestamp}} {{message.chatroom}}</span>
                     </li>
                 </ul>
             </div>
             <div class="card-action">
-                <NewMessage :name="name" />
+                <NewMessagePersonal />
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import NewMessage from '@/components/NewMessage'
+import NewMessagePersonal from '@/components/NewMessagePersonal'
 import db from '@/firebase/init'
 import moment from 'moment'
 
 export default {
-    name: 'Chat',
-    props: ['name'],
+    name: 'PersonalChat',
+    //props: ['myname'],
     components: {
-        NewMessage
+        NewMessagePersonal
     },
     data(){
         return{
             messages:[],
-            chatroom: 'all',
+            name:null,
+        }
+    },
+    methods:{
+        goBack(){
+            this.$router.push({name: 'Chat', params: { name: this.name  }})
         }
     },
     created(){
+        this.name = this.$route.params.myname
         let ref = db.collection('messages').orderBy('timestamp') 
         ref.onSnapshot(snapshot =>{
             snapshot.docChanges().forEach(change =>{
@@ -53,7 +58,7 @@ export default {
                 }
             })
             this.messages = this.messages.filter(value =>{
-                return value.chatroom == this.chatroom
+                return value.chatroom === this.$route.params.chatroom
             }) 
         })
     }
